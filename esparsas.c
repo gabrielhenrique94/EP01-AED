@@ -1,7 +1,7 @@
 /* Arquivo esparsas.c */
 
 #include "esparsas.h"
-#include <malloc.h>
+#include <stdlib.h>
 
 /* Coloca NUL na memoria apontada por m */
 void IniciaMatriz(PontMatriz m){
@@ -15,30 +15,30 @@ void IniciaMatriz(PontMatriz m){
 void LiberaMatriz(PontMatriz m){
    PontCab c = *m;
    PontCab aux;
-   PontElem e,aux;
+   PontElem e,auxe;
    while(c != NULL){
-      e = *m->abaixo;
+      e = c -> abaixo;
       while(e != NULL){
-         aux = e.abaixo;
+         auxe = e -> abaixo;
          free(e);
-         e = aux;
+         e = auxe;
       }      
-      aux = c.direita;
+      aux = c -> direita;
       free(c);
       c = aux;
-      *m = NUL;
    }
+   *m = NUL;
 }
-float BuscaSeqExc(PontMatriz m, int i , int j, PontCab ant, PontCab c, PontElem ante , PontElem e){
+void BuscaSeqExc(PontMatriz m, int i , int j, PontCab ant, PontCab c, PontElem ante , PontElem e){
    ant = NULL;
    ante = NULL;
-   PontCab c = *m;
+   c = *m;
    while(c != NULL && c -> coluna < j){
       ant = c;
-      c = c -> prox;
+      c = c -> direita;
    }
    
-   if(c == NULL) return -1;
+   if(c == NULL) return;
    
    e = c -> abaixo;
    while(e != NULL && e -> linha < i){
@@ -46,8 +46,6 @@ float BuscaSeqExc(PontMatriz m, int i , int j, PontCab ant, PontCab c, PontElem 
       e = e -> abaixo;
    }
    
-   if(e == NULL) return -1;
-   return e -> valor;
 }
 /* Simula 'm[i][j] = x', isto e:
    caso o elemento m[i][j] ja exista atribuiu o valor x a ele (caso x=0, 
@@ -56,9 +54,8 @@ float BuscaSeqExc(PontMatriz m, int i , int j, PontCab ant, PontCab c, PontElem 
 void AtribuiMatriz(PontMatriz m, int i, int j, float x){
    PontCab ant,c;
    PontElem ante,e;
-   float val;
 
-   val = BuscaSeqExc(m,i,j,ant,c,ante,e);
+   BuscaSeqExc(m,i,j,ant,c,ante,e);
 
    if(x != 0){//inserir/modificar elemento da matriz
       if(e != NULL){// mudar o valor do registro apenas;
@@ -93,29 +90,60 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
          ant -> direita = c;
          return;
       }
-
       //inserir no começo da matriz (ultimo caso ,verificação desnecessaria)
       *m = c;
+
    }else{//remover elemento da matriz
       if(e == NULL) return;//nada para fazer caso o elemento não exista
-      if(ant == NULL && e -> abaixo != )
+      if(ante == NULL){// é o primeiro elemento da coluna
+         c -> abaixo = e -> abaixo;
+      }else{
+         ante -> abaixo = e -> abaixo;
+      }
+      if(e -> abaixo == NULL){// é o unico elemento da coluna
+         if(ant == NULL){// é a primeira coluna da matriz
+            *m = c -> direita;
+         }else{
+            ant -> direita = c -> direita;
+         }
+         free(c);
+      }
+      free(e); // nesse ponto não devem existir na estrutura referencias à e
+
    }
 
 }
 
 /* Devolve o equivalente a 'm[i][j]' */
 float ValorMatriz(Matriz m, int i, int j){
+   PontCab ant,c;
+   PontElem ante,e;
 
-   return 0;
+   BuscaSeqExc(m,i,j,ant,c,ante,e);
+   if(e == NULL){
+      return 0;
+   }
+   return e -> valor;
 }
 
 /* Retorna as dimensoes maximas de 'm' nas memorias apontadas em 
    'l' (numero de linhas) e 'c' (numero de colunas). Se m==NUL retorna 0 e 0 nas
    memorias apontadas por l e c */
 void OrdemMatriz(Matriz  m, int* l, int* c){
+   PontCab cab = *m;
+   PontElem e;
+   *l = 0;
+   while(c -> direita!= NULL){
+      cab = cab -> direita;
+      e = cab -> abaixo;
+      while (e -> abaixo != NULL){
+         e = e -> abaixo;
+      }
+      if( e!= NULL && *l < e -> linha)  *l = e -> linha;
+   }
 
-/* Completar */
-
+   if( cab != NULL) *c = cab -> coluna; 
+   else *c = cab -> coluna;
 }
 
 /* Devolve o numero total de nos (elementos do tipo EleMatriz) alocados para 
