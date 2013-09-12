@@ -5,7 +5,7 @@
 
 /* Coloca NUL na memoria apontada por m */
 void IniciaMatriz(PontMatriz m){
-     *m = NUL;
+     *m = NULL;
 }
 
 
@@ -29,21 +29,25 @@ void LiberaMatriz(PontMatriz m){
    }
    *m = NUL;
 }
-void BuscaSeqExc(PontMatriz m, int i , int j, PontCab ant, PontCab c, PontElem ante , PontElem e){
-   ant = NULL;
-   ante = NULL;
-   c = *m;
-   while(c != NULL && c -> coluna < j){
-      ant = c;
-      c = c -> direita;
+void BuscaSeqExc(PontMatriz m, int i , int j, PontCab* ant, PontCab* c, PontElem* ante , PontElem*  e){
+
+   *ant = NULL;
+   *ante = NULL;
+   *c = *m;
+   *e = NULL;
+
+   while((*c) != NULL && (*c) -> coluna < j){
+      *ant = *c;
+      *c = (*c) -> direita;
    }
    
-   if(c == NULL) return;
+   if(*c == NULL) return;
    
-   e = c -> abaixo;
-   while(e != NULL && e -> linha < i){
-      ante = e;
-      e = e -> abaixo;
+   *e = (*c) -> abaixo;
+
+   while((*e) != NULL && (*e) -> linha < i){
+      *ante = *e;
+      *e = (*e) -> abaixo;
    }
    
 }
@@ -55,7 +59,7 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
    PontCab ant,c;
    PontElem ante,e;
 
-   BuscaSeqExc(m,i,j,ant,c,ante,e);
+   BuscaSeqExc(m,i,j,&ant,&c,&ante,&e);
 
    if(x != 0){//inserir/modificar elemento da matriz
       if(e != NULL){// mudar o valor do registro apenas;
@@ -91,8 +95,9 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
          return;
       }
       //inserir no começo da matriz (ultimo caso ,verificação desnecessaria)
+      c -> direita = *m;
       *m = c;
-
+      return;
    }else{//remover elemento da matriz
       if(e == NULL) return;//nada para fazer caso o elemento não exista
       if(ante == NULL){// é o primeiro elemento da coluna
@@ -109,9 +114,7 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
          free(c);
       }
       free(e); // nesse ponto não devem existir na estrutura referencias à e
-
    }
-
 }
 
 /* Devolve o equivalente a 'm[i][j]' */
@@ -119,7 +122,7 @@ float ValorMatriz(Matriz m, int i, int j){
    PontCab ant,c;
    PontElem ante,e;
 
-   BuscaSeqExc(m,i,j,ant,c,ante,e);
+   BuscaSeqExc(&m,i,j,&ant,&c,&ante,&e);
    if(e == NULL){
       return 0;
    }
@@ -130,54 +133,63 @@ float ValorMatriz(Matriz m, int i, int j){
    'l' (numero de linhas) e 'c' (numero de colunas). Se m==NUL retorna 0 e 0 nas
    memorias apontadas por l e c */
 void OrdemMatriz(Matriz  m, int* l, int* c){
-   PontCab cab = *m;
+   PontCab cab;
    PontElem e;
+   cab = m;
    *l = 0;
-   while(c -> direita!= NULL){
-      cab = cab -> direita;
+   *c = 0;
+   while(cab != NULL){
       e = cab -> abaixo;
       while (e -> abaixo != NULL){
          e = e -> abaixo;
       }
-      if( e!= NULL && *l < e -> linha)  *l = e -> linha;
-   }
+      
+      if( e != NULL && *l < e -> linha)  *l = e -> linha;
+      
+      *c = cab -> coluna;
+      cab = cab -> direita;
 
-   if( cab != NULL) *c = cab -> coluna; 
-   else *c = cab -> coluna;
+   }
 }
 
 /* Devolve o numero total de nos (elementos do tipo EleMatriz) alocados para 
    representar a matriz esparsa apontada por 'm' */
 int NumeroNos(Matriz m){
 
-/* Completar */
-
-   return 0;
+   int contador = 0;
+   PontCab c = m;
+   PontElem e;
+   while(c != NULL){
+      e = c -> abaixo;
+      while(e != NULL){
+         contador++;
+         e = e -> abaixo;
+      }
+      c = c -> direita;
+   }
+   return contador;
 }
 
 /* Devolve o numero total de cabecalhos (elementos do tipo CabMatriz) alocados 
    para representar a matriz esparsa apontada por 'm' */
 int NumeroCabecalhos(Matriz m){
-
-/* Completar */
-
-   return 0;
+   int contador = 0;
+   PontCab c = m;
+   while(c != NULL){
+      contador++;
+      c = c -> direita;
+   }
+   return contador;
 }
 
 /* Devolve o tamanho em bytes de um nó (ElemMatriz) usado na representação */
 int TamanhoNo(){
-
-/* Completar */
-
-   return 0;
+   return sizeof(ElemMatriz);
 }
 
 /* Devolve o tamanho em bytes de um cabecalho (CabMatriz) usado na representação */
 int TamanhoCabecalho(){
-
-/* Completar */
-
-   return 0;
+   return sizeof(CabMatriz);
 }
 
 /* Devolve o endereco do primeiro PontCab de uma nova matriz correspondendo a 
