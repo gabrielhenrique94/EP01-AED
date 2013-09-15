@@ -197,9 +197,48 @@ int TamanhoCabecalho(){
    Tente fazer uma implementacao eficiente (nao faz sentido tentar somar dois
    elementos que nao existem (que teriam valor zero) na matriz. */
 Matriz SomaMatriz(Matriz a, Matriz b) {
+   Matriz retorno; 
+   IniciaMatriz(retorno);
+   PontCab cabA,cabB,cabR,cabRant;
+   PontElem eleA,eleB,eleR;
+   cabA = *a;
+   cabB = *b;
 
-/* Completar */
+   while(cabA != NULL || cabB != NULL){
+      cabRant = cabR;
+      if(cabA == NULL){//otimizar porque vai cair aqui ate cabB == NULL
+         cabR = DuplicaCab(cabB);
+         cabRant -> direita = cabR;
+         cabB = cabB -> direita;
+         continue;
+      }
+      if(cabB == NULL){//otimizar
+         cabR = DuplicaCab(cabA);
+         cabRant -> direita = cabR;
+         cabA = cabA -> direita;
+         continue;
+      }
+      if(cabA -> coluna == cabB -> coluna){
+         cabR = MergeCab(cabA, cabB);
+         cabA = cabA -> direita;
+         cabB = cabB -> direita;
+      }else{
+         if(cabA -> coluna < cabB -> coluna){
+            cabR = DuplicaCab(cabA);
+            cabA = cabA -> direita;
+         }else{
+            cabR = DuplicaCab(cabB);
+            cabB = cabB -> direita;
+         }
+      }
+      cabRant -> direita = cabR;
+   }
 
-   return NUL;    
+}
+PontCab DuplicaCab(PontCab cab){
+   return NULL;
+}
+PontCab MergeCab(PontCab a, PontCab b){
+   return NULL;
 }
  
