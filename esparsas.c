@@ -191,19 +191,68 @@ int TamanhoNo(){
 int TamanhoCabecalho(){
    return sizeof(CabMatriz);
 }
-
+PontCab DuplicaCab(PontCab cab){
+   PontElem newE, e, newEAnt;
+   PontCab retorno = (PontCab) malloc(sizeof(CabMatriz));
+   retorno -> coluna = cab -> coluna;
+   retorno -> direita  = NULL;
+   e = cab -> abaixo;
+   newE = (PontElem) malloc(sizeof(ElemMatriz));
+   *newE = *e;
+   newE -> abaixo = NULL;
+   retorno -> abaixo = newE;
+   e = e -> abaixo;
+   while(e != NULL){
+      newEAnt = newE;
+      newE = (PontElem) malloc(sizeof(ElemMatriz));
+      *newE = *e;
+      newE -> abaixo = NULL;
+      newEAnt -> abaixo = newE;
+      e = e -> abaixo;
+   }
+   return retorno;
+}
+PontCab MergeCab(PontCab a, PontCab b){
+   return NULL;
+}
 /* Devolve o endereco do primeiro PontCab de uma nova matriz correspondendo a 
    soma das matrizes apontadas por a e b: a+b.
    Tente fazer uma implementacao eficiente (nao faz sentido tentar somar dois
    elementos que nao existem (que teriam valor zero) na matriz. */
 Matriz SomaMatriz(Matriz a, Matriz b) {
    Matriz retorno; 
-   IniciaMatriz(retorno);
+   IniciaMatriz(&retorno);
    PontCab cabA,cabB,cabR,cabRant;
    PontElem eleA,eleB,eleR;
-   cabA = *a;
-   cabB = *b;
-
+   cabA = a;
+   cabB = b;
+   
+   if(cabA == NULL){
+      cabR = DuplicaCab(cabB);
+      retorno = cabR;
+      cabB = cabB -> direita;
+   }else{
+      if(cabB == NULL){
+         cabR = DuplicaCab(cabA);
+         retorno = cabR;
+         cabA = cabA -> direita;
+      }else{
+         if(cabA -> coluna == cabB -> coluna){
+            cabR = MergeCab(cabA, cabB);
+            cabA = cabA -> direita;
+            cabB = cabB -> direita;
+         }else{
+            if(cabA -> coluna < cabB -> coluna){
+               cabR = DuplicaCab(cabA);
+               cabA = cabA -> direita;
+            }else{
+               cabR = DuplicaCab(cabB);
+               cabB = cabB -> direita;
+            }
+         }
+      }
+      retorno = cabR;
+   }
    while(cabA != NULL || cabB != NULL){
       cabRant = cabR;
       if(cabA == NULL){//otimizar porque vai cair aqui ate cabB == NULL
@@ -233,12 +282,7 @@ Matriz SomaMatriz(Matriz a, Matriz b) {
       }
       cabRant -> direita = cabR;
    }
+   return retorno;
+}
 
-}
-PontCab DuplicaCab(PontCab cab){
-   return NULL;
-}
-PontCab MergeCab(PontCab a, PontCab b){
-   return NULL;
-}
  
