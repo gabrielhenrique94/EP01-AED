@@ -2,6 +2,7 @@
 
 #include "esparsas.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 /* Coloca NUL na memoria apontada por m */
 void IniciaMatriz(PontMatriz m){
@@ -213,7 +214,79 @@ PontCab DuplicaCab(PontCab cab){
    return retorno;
 }
 PontCab MergeCab(PontCab a, PontCab b){
-   return NULL;
+   PontCab r = (PontCab) malloc(sizeof(CabMatriz));
+   r -> direita = NULL;
+   r -> coluna = a -> coluna;
+
+   PontElem ea, eb, er, ernew;
+
+   er = (PontElem) malloc(sizeof(ElemMatriz));
+   er -> abaixo = NULL;
+   
+   ea = a -> abaixo;
+   eb = b -> abaixo;
+
+   if(ea -> linha == eb -> linha){
+      er -> linha = ea -> linha;
+      er -> valor = ea -> valor + eb -> valor;
+      ea = ea -> abaixo;
+      eb = eb -> abaixo;
+   }
+   if(ea -> linha < eb -> linha){
+      er -> linha  = ea -> linha;
+      er -> valor = ea -> valor;
+      ea = ea -> abaixo;
+   }
+   if(eb -> linha < ea -> linha){
+      er -> linha  = eb -> linha;
+      er -> valor = eb -> valor;
+      eb = eb -> abaixo;
+   }
+   r -> abaixo = er;
+
+   while(ea != NULL || eb != NULL){
+      ernew = (PontElem) malloc(sizeof(ElemMatriz));
+      ernew -> abaixo = NULL;
+      if(ea == NULL){
+         ernew -> linha = eb -> linha;
+         ernew -> linha = eb -> valor;
+         er -> abaixo = ernew;
+         eb = eb -> abaixo;
+         er = ernew;
+         continue;
+      }
+      if(eb == NULL){
+         ernew -> linha = ea -> linha;
+         ernew -> linha = ea -> valor;
+         er -> abaixo = ernew;
+         ea = ea -> abaixo;
+         er = ernew;
+         continue;
+      }
+      if(ea -> linha == eb -> linha){
+         ernew -> linha = ea -> linha;
+         ernew -> valor = ea -> valor + eb -> valor;
+         er -> abaixo = ernew;
+         er = ernew;
+         ea = ea -> abaixo;
+         eb = eb -> abaixo;
+      }
+      if(ea -> linha < eb -> linha){
+         ernew -> linha = ea -> linha;
+         ernew -> valor = ea -> valor;
+         er -> abaixo = ernew;
+         er = ernew;       
+         ea = ea -> abaixo;  
+      }
+      if(eb -> linha < ea -> linha){
+         ernew -> linha = eb -> linha;
+         ernew -> valor = eb -> valor;
+         er -> abaixo = ernew;
+         er = ernew;       
+         eb = eb -> abaixo;  
+      }
+   }
+   return r;
 }
 /* Devolve o endereco do primeiro PontCab de uma nova matriz correspondendo a 
    soma das matrizes apontadas por a e b: a+b.
@@ -255,13 +328,13 @@ Matriz SomaMatriz(Matriz a, Matriz b) {
    }
    while(cabA != NULL || cabB != NULL){
       cabRant = cabR;
-      if(cabA == NULL){//otimizar porque vai cair aqui ate cabB == NULL
+      if(cabA == NULL){
          cabR = DuplicaCab(cabB);
          cabRant -> direita = cabR;
          cabB = cabB -> direita;
          continue;
       }
-      if(cabB == NULL){//otimizar
+      if(cabB == NULL){
          cabR = DuplicaCab(cabA);
          cabRant -> direita = cabR;
          cabA = cabA -> direita;
