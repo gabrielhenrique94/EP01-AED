@@ -2,7 +2,6 @@
 
 #include "esparsas.h"
 #include <stdlib.h>
-#include <stdio.h>
 
 /* Coloca NUL na memoria apontada por m */
 void IniciaMatriz(PontMatriz m){
@@ -231,13 +230,11 @@ PontCab MergeCab(PontCab a, PontCab b){
       er -> valor = ea -> valor + eb -> valor;
       ea = ea -> abaixo;
       eb = eb -> abaixo;
-   }
-   if(ea -> linha < eb -> linha){
+   }else if(ea -> linha < eb -> linha){
       er -> linha  = ea -> linha;
       er -> valor = ea -> valor;
       ea = ea -> abaixo;
-   }
-   if(eb -> linha < ea -> linha){
+   }else if(eb -> linha < ea -> linha){
       er -> linha  = eb -> linha;
       er -> valor = eb -> valor;
       eb = eb -> abaixo;
@@ -253,32 +250,26 @@ PontCab MergeCab(PontCab a, PontCab b){
          er -> abaixo = ernew;
          eb = eb -> abaixo;
          er = ernew;
-         continue;
-      }
-      if(eb == NULL){
+      }else if(eb == NULL){
          ernew -> linha = ea -> linha;
          ernew -> linha = ea -> valor;
          er -> abaixo = ernew;
          ea = ea -> abaixo;
          er = ernew;
-         continue;
-      }
-      if(ea -> linha == eb -> linha){
+      }else if(ea -> linha == eb -> linha){
          ernew -> linha = ea -> linha;
          ernew -> valor = ea -> valor + eb -> valor;
          er -> abaixo = ernew;
          er = ernew;
          ea = ea -> abaixo;
          eb = eb -> abaixo;
-      }
-      if(ea -> linha < eb -> linha){
+      }else if(ea -> linha < eb -> linha){
          ernew -> linha = ea -> linha;
          ernew -> valor = ea -> valor;
          er -> abaixo = ernew;
-         er = ernew;       
-         ea = ea -> abaixo;  
-      }
-      if(eb -> linha < ea -> linha){
+         er = ernew; 
+         ea = ea -> abaixo;
+      }else if(eb -> linha < ea -> linha){
          ernew -> linha = eb -> linha;
          ernew -> valor = eb -> valor;
          er -> abaixo = ernew;
@@ -293,39 +284,36 @@ PontCab MergeCab(PontCab a, PontCab b){
    Tente fazer uma implementacao eficiente (nao faz sentido tentar somar dois
    elementos que nao existem (que teriam valor zero) na matriz. */
 Matriz SomaMatriz(Matriz a, Matriz b) {
+
    Matriz retorno; 
    IniciaMatriz(&retorno);
+
    PontCab cabA,cabB,cabR,cabRant;
    PontElem eleA,eleB,eleR;
    cabA = a;
    cabB = b;
-   
    if(cabA == NULL){
       cabR = DuplicaCab(cabB);
       retorno = cabR;
       cabB = cabB -> direita;
-   }else{
-      if(cabB == NULL){
-         cabR = DuplicaCab(cabA);
-         retorno = cabR;
-         cabA = cabA -> direita;
-      }else{
-         if(cabA -> coluna == cabB -> coluna){
-            cabR = MergeCab(cabA, cabB);
-            cabA = cabA -> direita;
-            cabB = cabB -> direita;
-         }else{
-            if(cabA -> coluna < cabB -> coluna){
-               cabR = DuplicaCab(cabA);
-               cabA = cabA -> direita;
-            }else{
-               cabR = DuplicaCab(cabB);
-               cabB = cabB -> direita;
-            }
-         }
-      }
+   }else if(cabB == NULL){
+      cabR = DuplicaCab(cabA);
       retorno = cabR;
+      cabA = cabA -> direita;
+   }else if(cabA -> coluna == cabB -> coluna){
+      cabR = MergeCab(cabA, cabB);
+      cabA = cabA -> direita;
+      cabB = cabB -> direita;
+   }else if(cabA -> coluna < cabB -> coluna){
+      cabR = DuplicaCab(cabA);
+      cabA = cabA -> direita;
+   }else{
+      cabR = DuplicaCab(cabB);
+      cabB = cabB -> direita;
    }
+   retorno = cabR;
+   
+
    while(cabA != NULL || cabB != NULL){
       cabRant = cabR;
       if(cabA == NULL){
@@ -344,17 +332,16 @@ Matriz SomaMatriz(Matriz a, Matriz b) {
          cabR = MergeCab(cabA, cabB);
          cabA = cabA -> direita;
          cabB = cabB -> direita;
+      }else if(cabA -> coluna < cabB -> coluna){
+         cabR = DuplicaCab(cabA);
+         cabA = cabA -> direita;
       }else{
-         if(cabA -> coluna < cabB -> coluna){
-            cabR = DuplicaCab(cabA);
-            cabA = cabA -> direita;
-         }else{
-            cabR = DuplicaCab(cabB);
-            cabB = cabB -> direita;
-         }
+         cabR = DuplicaCab(cabB);
+         cabB = cabB -> direita;
       }
       cabRant -> direita = cabR;
    }
+
    return retorno;
 }
 

@@ -58,6 +58,7 @@ float Custo(Matriz a) {
 }
 
 int main() {
+  
   Matriz a,b,c;
   LeMatriz(&a);
   EscreveMatriz(a);
@@ -66,6 +67,7 @@ int main() {
   LeMatriz(&b);
   EscreveMatriz(b);
   printf("Custo: %6.3f%%\n",Custo(b));
+
   ImprimirListaDeCabecalhos(b);
   c = SomaMatriz(a,b);
   if (c==NUL) 
