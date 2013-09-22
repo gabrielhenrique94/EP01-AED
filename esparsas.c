@@ -9,7 +9,6 @@ void IniciaMatriz(PontMatriz m){
 }
 
 
-
 /* Libera a memoria de todos os elementos (normais e cabecas) da matriz 
    apontada por m e coloca NUL na posicao de memoria apontada por m */
 void LiberaMatriz(PontMatriz m){
@@ -36,26 +35,36 @@ void BuscaSeqExc(PontMatriz m, int i , int j, PontCab* ant, PontCab* c, PontElem
    *c = *m;
    *e = NULL;
 
-   while((*c) != NULL && (*c) -> coluna < j){
+   while(((*c) != NULL) && ((*c) -> coluna < j)){
       *ant = *c;
       *c = (*c) -> direita;
    }
    
    if(*c == NULL) return;
-   
-   *e = (*c) -> abaixo;
 
+   if((*c) -> coluna != j){
+      *c = NULL;
+      return;
+   }
+
+   *e = (*c) -> abaixo;
    while((*e) != NULL && (*e) -> linha < i){
       *ante = *e;
       *e = (*e) -> abaixo;
    }
-   
+   if(*e == NULL) return;
+
+   if((*e)-> linha != i){
+      *e = NULL;
+      return;
+   }
 }
 /* Simula 'm[i][j] = x', isto e:
    caso o elemento m[i][j] ja exista atribuiu o valor x a ele (caso x=0, 
       elimina este elemento da matriz);
    caso o elmeneto m[i][j] nao exista e x!=0 insere o elemento na estrutura */
 void AtribuiMatriz(PontMatriz m, int i, int j, float x){
+  
    PontCab ant,c;
    PontElem ante,e;
 
@@ -71,8 +80,8 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
       e -> valor = x;
       e -> linha = i;
       e -> abaixo = NULL;
-
       if(ante != NULL){// inserir no meio da coluna
+         
          e -> abaixo = ante -> abaixo;
          ante -> abaixo = e;
          return;
@@ -88,6 +97,7 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
       c = (PontCab) malloc(sizeof(CabMatriz));
       c -> coluna = j;
       c -> abaixo = e;
+      c -> direita = NULL;
 
       if(ant != NULL){//inserir no meio da lista de cabs
          c -> direita = ant -> direita;
@@ -144,7 +154,8 @@ void OrdemMatriz(Matriz  m, int* l, int* c){
          e = e -> abaixo;
       }
       
-      if( e != NULL && *l < e -> linha)  *l = e -> linha;
+      if( e != NULL && *l < e -> linha)
+        *l = e -> linha;
       
       *c = cab -> coluna;
       cab = cab -> direita;
@@ -246,13 +257,13 @@ PontCab MergeCab(PontCab a, PontCab b){
       ernew -> abaixo = NULL;
       if(ea == NULL){
          ernew -> linha = eb -> linha;
-         ernew -> linha = eb -> valor;
+         ernew -> valor = eb -> valor;
          er -> abaixo = ernew;
          eb = eb -> abaixo;
          er = ernew;
       }else if(eb == NULL){
          ernew -> linha = ea -> linha;
-         ernew -> linha = ea -> valor;
+         ernew -> valor = ea -> valor;
          er -> abaixo = ernew;
          ea = ea -> abaixo;
          er = ernew;
