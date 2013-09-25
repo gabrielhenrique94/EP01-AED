@@ -11,8 +11,28 @@ void IniciaMatriz(PontMatriz m){
 /* Libera a memoria de todos os elementos (normais e cabecas) da matriz 
    apontada por m e coloca NUL na posicao de memoria apontada por m */
 void LiberaMatriz(PontMatriz m){
-
-/* Completar */
+    
+    if (m != NUL) {
+    
+        PontCab auxCab = *m;
+        PontCab freeCab;
+        PontElem auxElem, freeElem;
+        
+        while (auxCab != NULL) {
+            auxElem = auxCab->abaixo;
+            
+            while (auxElem != NULL) {
+                freeElem = auxElem;
+                auxElem = freeElem->abaixo;
+                free(freeElem);
+            }
+            
+            freeCab = auxCab;
+            auxCab = freeCab->direita;
+            free(freeCab);
+        }
+        *m = NUL;
+	} 
 
 }
 
@@ -29,7 +49,28 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
 /* Devolve o equivalente a 'm[i][j]' */
 float ValorMatriz(Matriz m, int i, int j){
 
-/* Completar */
+   if (m != NUL && i > 0 && j > 0) {
+       
+       PontCab auxCab = *m;
+       
+       while (auxCab != NULL && auxCab->coluna != j) {
+           auxCab = auxCab->direita;
+       }
+       
+       if (auxCab != NULL && auxCab->coluna == j) {
+
+           PontElem auxElem = auxCab->abaixo;
+
+           while (auxElem != NULL && auxElem->linha != i) {
+               auxElem = auxElem->abaixo;
+           }
+           
+           if (auxElem != NULL && auxElem->linha == i) {
+               return auxElem->valor;
+           }
+       }
+   
+   }
 
    return 0;
 }
