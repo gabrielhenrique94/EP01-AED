@@ -1,7 +1,8 @@
 /* Arquivo esparsas.c */
 
 #include "esparsas.h"
-#include <stdlib.h>
+#include <malloc.h>
+#include <stdio.h>
 
 /* Coloca NUL na memoria apontada por m */
 void IniciaMatriz(PontMatriz m){
@@ -227,30 +228,11 @@ PontCab MergeCab(PontCab a, PontCab b){
    PontCab r = (PontCab) malloc(sizeof(CabMatriz));
    r -> direita = NULL;
    r -> coluna = a -> coluna;
-
+   r -> abaixo = NULL;
    PontElem ea, eb, er, ernew;
-
-   er = (PontElem) malloc(sizeof(ElemMatriz));
-   er -> abaixo = NULL;
    
    ea = a -> abaixo;
    eb = b -> abaixo;
-
-   if(ea -> linha == eb -> linha){
-      er -> linha = ea -> linha;
-      er -> valor = ea -> valor + eb -> valor;
-      ea = ea -> abaixo;
-      eb = eb -> abaixo;
-   }else if(ea -> linha < eb -> linha){
-      er -> linha  = ea -> linha;
-      er -> valor = ea -> valor;
-      ea = ea -> abaixo;
-   }else if(eb -> linha < ea -> linha){
-      er -> linha  = eb -> linha;
-      er -> valor = eb -> valor;
-      eb = eb -> abaixo;
-   }
-   r -> abaixo = er;
 
    while(ea != NULL || eb != NULL){
       ernew = (PontElem) malloc(sizeof(ElemMatriz));
@@ -258,35 +240,41 @@ PontCab MergeCab(PontCab a, PontCab b){
       if(ea == NULL){
          ernew -> linha = eb -> linha;
          ernew -> valor = eb -> valor;
-         er -> abaixo = ernew;
          eb = eb -> abaixo;
-         er = ernew;
       }else if(eb == NULL){
          ernew -> linha = ea -> linha;
          ernew -> valor = ea -> valor;
-         er -> abaixo = ernew;
          ea = ea -> abaixo;
-         er = ernew;
       }else if(ea -> linha == eb -> linha){
          ernew -> linha = ea -> linha;
          ernew -> valor = ea -> valor + eb -> valor;
-         er -> abaixo = ernew;
-         er = ernew;
+         if(ernew -> valor == 0){
+            free(ernew);
+            ernew = NULL;
+         }
          ea = ea -> abaixo;
          eb = eb -> abaixo;
       }else if(ea -> linha < eb -> linha){
          ernew -> linha = ea -> linha;
          ernew -> valor = ea -> valor;
-         er -> abaixo = ernew;
-         er = ernew; 
          ea = ea -> abaixo;
       }else if(eb -> linha < ea -> linha){
          ernew -> linha = eb -> linha;
          ernew -> valor = eb -> valor;
-         er -> abaixo = ernew;
-         er = ernew;       
          eb = eb -> abaixo;  
       }
+      if(ernew != NULL){
+         if(r -> abaixo == NULL){
+            r -> abaixo = ernew;
+         }else{
+            er -> abaixo = ernew;
+         }
+         er = ernew;       
+      }
+   }
+   if(r -> abaixo == NULL){
+      free (r);
+      r = NULL;
    }
    return r;
 }
@@ -303,43 +291,17 @@ Matriz SomaMatriz(Matriz a, Matriz b) {
    PontElem eleA,eleB,eleR;
    cabA = a;
    cabB = b;
-   if(cabA == NULL){
-      cabR = DuplicaCab(cabB);
-      retorno = cabR;
-      cabB = cabB -> direita;
-   }else if(cabB == NULL){
-      cabR = DuplicaCab(cabA);
-      retorno = cabR;
-      cabA = cabA -> direita;
-   }else if(cabA -> coluna == cabB -> coluna){
-      cabR = MergeCab(cabA, cabB);
-      cabA = cabA -> direita;
-      cabB = cabB -> direita;
-   }else if(cabA -> coluna < cabB -> coluna){
-      cabR = DuplicaCab(cabA);
-      cabA = cabA -> direita;
-   }else{
-      cabR = DuplicaCab(cabB);
-      cabB = cabB -> direita;
-   }
-   retorno = cabR;
-   
 
    while(cabA != NULL || cabB != NULL){
       cabRant = cabR;
       if(cabA == NULL){
          cabR = DuplicaCab(cabB);
-         cabRant -> direita = cabR;
          cabB = cabB -> direita;
-         continue;
-      }
-      if(cabB == NULL){
+         
+      }else if(cabB == NULL){
          cabR = DuplicaCab(cabA);
-         cabRant -> direita = cabR;
          cabA = cabA -> direita;
-         continue;
-      }
-      if(cabA -> coluna == cabB -> coluna){
+      }else if(cabA -> coluna == cabB -> coluna){
          cabR = MergeCab(cabA, cabB);
          cabA = cabA -> direita;
          cabB = cabB -> direita;
@@ -350,7 +312,13 @@ Matriz SomaMatriz(Matriz a, Matriz b) {
          cabR = DuplicaCab(cabB);
          cabB = cabB -> direita;
       }
-      cabRant -> direita = cabR;
+      if(cabR != NULL){
+         if(retorno == NULL){
+            retorno = cabR;
+         }else{
+            cabRant -> direita = cabR;
+         }
+      }
    }
 
    return retorno;
