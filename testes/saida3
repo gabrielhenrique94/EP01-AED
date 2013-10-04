@@ -1,0 +1,19 @@
+Linha Maxima:  29 , Coluna Maxima:  29
+Elementos Normais:   3 , Elementos Cabecalho:   3
+  1   1    3.0
+  2   2    4.0
+ 29  29   29.0
+Custo:  2.140%
+Indices das Colunas: 1->2->29
+Linha Maxima:   2 , Coluna Maxima:   2
+Elementos Normais:   2 , Elementos Cabecalho:   2
+  1   1   -3.0
+  2   2   -4.0
+Custo: 300.000%
+Indices das Colunas: 1->2
+Linha Maxima:  29 , Coluna Maxima:  29
+Elementos Normais:   1 , Elementos Cabecalho:   1
+ 29  29   29.0
+Custo:  0.713%
+Indices das Colunas: 29
+

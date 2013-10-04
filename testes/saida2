@@ -1,0 +1,28 @@
+Linha Maxima:   5 , Coluna Maxima:   3
+Elementos Normais:   4 , Elementos Cabecalho:   3
+  1   1    4.0
+  5   1    1.0
+  2   2    5.0
+  1   3    4.0
+Custo: 140.000%
+Indices das Colunas: 1->2->3
+Linha Maxima: 1000 , Coluna Maxima: 1000
+Elementos Normais:   4 , Elementos Cabecalho:   3
+  1   1    6.0
+  3   1    7.0
+  3   3    2.0
+1000 1000   55.0
+Custo:  0.002%
+Indices das Colunas: 1->3->1000
+Linha Maxima: 1000 , Coluna Maxima: 1000
+Elementos Normais:   7 , Elementos Cabecalho:   4
+  1   1   10.0
+  3   1    7.0
+  5   1    1.0
+  2   2    5.0
+  1   3    4.0
+  3   3    2.0
+1000 1000   55.0
+Custo:  0.003%
+Indices das Colunas: 1->2->3->1000
+

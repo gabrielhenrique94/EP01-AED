@@ -1,8 +1,8 @@
 /* Arquivo esparsas.c */
 
 #include "esparsas.h"
-#include <malloc.h>
-#include <stdio.h>
+#include <stdlib.h>
+
 
 /* Coloca NUL na memoria apontada por m */
 void IniciaMatriz(PontMatriz m){
