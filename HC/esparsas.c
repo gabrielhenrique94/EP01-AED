@@ -12,7 +12,7 @@ void IniciaMatriz(PontMatriz m){
    apontada por m e coloca NUL na posicao de memoria apontada por m */
 void LiberaMatriz(PontMatriz m){
     
-    if (m != NUL) {
+    if (*m != NUL) {
     
         PontCab auxCab = *m;
         PontCab freeCab;
@@ -42,8 +42,54 @@ void LiberaMatriz(PontMatriz m){
    caso o elmeneto m[i][j] nao exista e x!=0 insere o elemento na estrutura */
 void AtribuiMatriz(PontMatriz m, int i, int j, float x){
 
-/* Completar */
+    PontCab auxCab = *m;
+    PontElem auxElem, proxElem, prevElem;
+    int countElemCol = 0; //auxilia no reajuste de ligacoes
 
+    if (i > 0 && j > 0) {   //Validar se e uma posicao valida
+
+        if (x == 0) { // Novo valor e 0
+            
+            while (auxCab != NULL && j > auxCab->coluna) {
+                
+                if (j == auxCab->coluna) {   // Coluna existe
+                    auxElem = auxCab->abaixo;
+                    
+                    while (auxElem != NULL && i > auxElem->linha) {
+                        countElemCol += 1;
+                        
+                        if (i == auxElem->linha) { // Elemento ja existe
+                            
+                            if (auxElem->abaixo == NULL && countElemCol == 1) {
+                                free(auxElem);
+                                free(auxCab);
+                                auxCab = NULL;
+                                
+                            } else if(auxElem->abaixo == NULL) {
+                                prevElem.abaixo = NULL;
+                                free(auxElem);
+                                
+                            } else {
+                                proxElem = aux->abaixo;
+                                prevElem.abaixo = proxElem;
+                                free(auxElem);
+                                auxCab = NULL;
+                            }
+                        
+                        }
+                        
+                        prevElem = auxElem;
+                        auxElem = auxElem->abaixo;
+                    }
+                }
+                
+                auxCab = auxCab->direita;
+            }
+            
+        } else { // Valor diferente de 0
+            //falta caso 2 :D
+        }
+    }
 }
 
 /* Devolve o equivalente a 'm[i][j]' */
@@ -51,7 +97,7 @@ float ValorMatriz(Matriz m, int i, int j){
 
    if (m != NUL && i > 0 && j > 0) {
        
-       PontCab auxCab = *m;
+       PontCab auxCab = m;
        
        while (auxCab != NULL && auxCab->coluna != j) {
            auxCab = auxCab->direita;
@@ -88,34 +134,60 @@ void OrdemMatriz(Matriz  m, int* l, int* c){
    representar a matriz esparsa apontada por 'm' */
 int NumeroNos(Matriz m){
 
-/* Completar */
+    int numElems = 0;
+    
+    if (m != NUL) {
+        
+        PontCab auxCab = m;
+        PontElem auxElem = auxCab->abaixo;
+        
+        while (auxCab != NULL) {
+            while (auxElem != NULL) {
+                numElems += 1;
+                auxElem = auxElem->abaixo;
+            }
+            
+            auxCab = auxCab->direita;
+        }
+    }
+    
+    return numElems;
 
-   return 0;
+
 }
 
 /* Devolve o numero total de cabecalhos (elementos do tipo CabMatriz) alocados 
    para representar a matriz esparsa apontada por 'm' */
 int NumeroCabecalhos(Matriz m){
-
-/* Completar */
-
-   return 0;
+    
+    int numCabs = 0;
+    
+    if (m != NUL) {
+        
+        PontCab auxCab = m;
+        
+        while (auxCab != NULL) {
+            numCabs += 1;
+            auxCab = auxCab->direita;
+        }    
+    }
+    
+    return numCabs;
+    
 }
 
 /* Devolve o tamanho em bytes de um nó (ElemMatriz) usado na representação */
 int TamanhoNo(){
 
-/* Completar */
+    return sizeof(ElemMatriz);
 
-   return 0;
 }
 
 /* Devolve o tamanho em bytes de um cabecalho (CabMatriz) usado na representação */
 int TamanhoCabecalho(){
 
-/* Completar */
+    return sizeof(CabMatriz);
 
-   return 0;
 }
 
 /* Devolve o endereco do primeiro PontCab de uma nova matriz correspondendo a 
