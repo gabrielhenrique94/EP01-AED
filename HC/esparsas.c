@@ -43,19 +43,20 @@ void LiberaMatriz(PontMatriz m){
 void AtribuiMatriz(PontMatriz m, int i, int j, float x){
 
     PontCab auxCab = *m;
-    PontElem auxElem, proxElem, prevElem;
+    PontCab prevCab, newCab;
+    PontElem auxElem, proxElem, prevElem, newElem;
     int countElemCol = 0; //auxilia no reajuste de ligacoes
 
     if (i > 0 && j > 0) {   //Validar se e uma posicao valida
 
         if (x == 0) { // Novo valor e 0
             
-            while (auxCab != NULL && j > auxCab->coluna) {
+            while (auxCab != NULL && j >= auxCab->coluna) {
                 
                 if (j == auxCab->coluna) {   // Coluna existe
                     auxElem = auxCab->abaixo;
                     
-                    while (auxElem != NULL && i > auxElem->linha) {
+                    while (auxElem != NULL && i >= auxElem->linha) {
                         countElemCol += 1;
                         
                         if (i == auxElem->linha) { // Elemento ja existe
@@ -63,31 +64,101 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                             if (auxElem->abaixo == NULL && countElemCol == 1) {
                                 free(auxElem);
                                 free(auxCab);
+                                auxElem = NULL;
                                 auxCab = NULL;
                                 
                             } else if(auxElem->abaixo == NULL) {
-                                prevElem.abaixo = NULL;
+                                prevElem->abaixo = NULL;
                                 free(auxElem);
+                                auxElem = NULL;
+                                auxCab = NULL;
                                 
                             } else {
-                                proxElem = aux->abaixo;
-                                prevElem.abaixo = proxElem;
+                                proxElem = auxElem->abaixo;
+                                prevElem->abaixo = proxElem; 
                                 free(auxElem);
+                                auxElem = NULL;
                                 auxCab = NULL;
                             }
                         
                         }
                         
-                        prevElem = auxElem;
-                        auxElem = auxElem->abaixo;
+                        if (auxElem != NULL) {
+                            prevElem = auxElem;
+                            auxElem = auxElem->abaixo;
+                        }
                     }
                 }
                 
-                auxCab = auxCab->direita;
+                if (auxCab != NULL) {
+                    auxCab = auxCab->direita;
+                }
             }
             
         } else { // Valor diferente de 0
-            //falta caso 2 :D
+            
+            while (auxCab != NULL && j > auxCab->coluna) { 
+                prevCab = auxCab;
+                auxCab = auxCab->direita;
+            }
+            
+            if (auxCab != NULL) { // o while parou por j ser <=
+                auxElem = auxCab->abaixo;
+                
+                if (j == auxCab->coluna) {
+                    
+                    while (auxElem != NULL && i > auxElem->linha) {
+                        prevElem = auxElem;
+                        auxElem = auxElem->abaixo;
+                    }
+                    
+                    if (auxElem != NULL) { // i <= linha
+                        
+                        if (i == auxElem->linha) { //elemento existe, substitui valor
+                            auxElem->valor = x;
+                            
+                        } else { // i < linha
+                            newElem = (PontElem) malloc(sizeof(ElemMatriz));
+                            newElem->valor = x;
+                            newElem->linha = i;
+                            newElem->abaixo = auxElem;
+                            prevElem->abaixo = newElem;
+                        }
+                        
+                    } else if (i > prevElem->linha){// o elem e o ultimo do cab e auxElem==NULL
+                        newElem = (PontElem) malloc(sizeof(ElemMatriz));
+                        newElem->valor = x;
+                        newElem->linha = i;
+                        newElem->abaixo = NULL;
+                        prevElem->abaixo = newElem;
+                    }
+                        
+                } else if (j < auxCab->coluna) {
+                    newElem = (PontElem) malloc(sizeof(ElemMatriz));
+                    newElem->valor = x;
+                    newElem->linha = i;
+                    newElem->abaixo = NULL;
+                    
+                    newCab = (PontCab) malloc(sizeof(CabMatriz));
+                    newCab->coluna = j;
+                    newCab->abaixo = newElem;
+                    newCab->direita = auxCab;
+                    prevCab->direita = newCab;
+                } 
+                
+            } else if (j > prevCab->coluna){ // o Cab nao existe e e o ultimo
+                newElem = (PontElem) malloc(sizeof(ElemMatriz));
+                newElem->valor = x;
+                newElem->linha = i;
+                newElem->abaixo = NULL;
+                
+                newCab = (PontCab) malloc(sizeof(CabMatriz));
+                newCab->coluna = j;
+                newCab->abaixo = newElem;
+                newCab->direita = NULL;
+                
+            }
+            
         }
     }
 }
