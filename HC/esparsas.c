@@ -266,9 +266,20 @@ int TamanhoCabecalho(){
    Tente fazer uma implementacao eficiente (nao faz sentido tentar somar dois
    elementos que nao existem (que teriam valor zero) na matriz. */
 Matriz SomaMatriz(Matriz a, Matriz b) {
-
-/* Completar */
-
-   return NUL;    
+ 
+    PontCab auxCabA = a;
+    PontCab auxCabB = b;
+    PontCab specialCab;
+    PontElem auxElemA, auxElemB;
+    Matriz newMatriz; 
+    
+    IniciaMatriz(&newMatriz);
+        
+    while (auxCabA != NULL || auxCabB != NULL) {
+        
+    }
+    
+    return newMatriz;
+    
 }
  
