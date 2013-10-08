@@ -1,6 +1,6 @@
 /* Arquivo testaesparsas.c */
 #include <stdio.h>
-#include "esparsas.c"
+#include "esparsas.h"
 
 void LeMatriz(PontMatriz a) {
 /* Inicializa e lê os elementos de 'a' */
