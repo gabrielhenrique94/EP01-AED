@@ -196,8 +196,37 @@ float ValorMatriz(Matriz m, int i, int j){
    'l' (numero de linhas) e 'c' (numero de colunas). Se m==NUL retorna 0 e 0 nas
    memorias apontadas por l e c */
 void OrdemMatriz(Matriz  m, int* l, int* c){
-
-/* Completar */
+  
+    PontCab auxCab = m;
+    PontElem auxElem;
+    
+    *l = 0;
+    *c = 0;
+    
+    while(auxCab != NUL) {
+        
+        if (*c < auxCab->coluna) {
+            *c = auxCab->coluna;
+        }
+        
+        auxElem = auxCab->abaixo;
+        
+        while(auxElem != NUL) {
+        
+            if (*l < auxElem->linha) {
+                *l = auxElem->linha;
+            }
+            auxElem = auxElem->abaixo;
+        }
+        
+        auxCab = auxCab->direita;
+    }
+    
+        
+    
+  
+    
+    
 
 }
 
