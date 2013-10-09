@@ -42,47 +42,41 @@ void LiberaMatriz(PontMatriz m){
       elimina este elemento da matriz);
    caso o elmeneto m[i][j] nao exista e x!=0 insere o elemento na estrutura */
 void AtribuiMatriz(PontMatriz m, int i, int j, float x){
-
     
     PontCab auxCab = *m;
-    PontCab prevCab, newCab;
+    PontCab prevCab, newCab, helpCab;
     PontElem auxElem, proxElem, prevElem, newElem;
     int countElemCol = 0; //auxilia no reajuste de ligacoes
 
     if (i > 0 && j > 0) {   //Validar se e uma posicao valida 
-        printf("1 - Posicao validada");
+       
         if (x == 0) { // Novo valor e 0
-            printf("2 - Valor é 0 %f \n", x);
+            
             while (auxCab != NUL && j >= auxCab->coluna) {
-                 printf("3 - While \n");
-     
-                if (j == auxCab->coluna) { 
-                    printf("4 - j == auxCab \n");  // Coluna existe
+                     
+                if (j == auxCab->coluna) { // Coluna existe
+                     
                     auxElem = auxCab->abaixo;
                      
                     while (auxElem != NUL && i >= auxElem->linha) {
-                        printf("5 - while \n");
-              
+                       
                         countElemCol += 1;
                         
                         if (i == auxElem->linha) { // Elemento ja existe
-                            printf("6 - i == auxElem \n");
+                            
                             if (auxElem->abaixo == NUL && countElemCol == 1) {
-                                printf("7 - free");
                                 free(auxElem);
                                 free(auxCab);
                                 auxElem = NUL;
                                 auxCab = NUL;
                                 
                             } else if(auxElem->abaixo == NUL) {
-                                printf("8 - free");
                                 prevElem->abaixo = NUL;
                                 free(auxElem);
                                 auxElem = NUL;
                                 auxCab = NUL;
                                 
                             } else {
-                                printf("9 - free");
                                 proxElem = auxElem->abaixo;
                                 prevElem->abaixo = proxElem; 
                                 free(auxElem);
@@ -93,7 +87,6 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                         }
                         
                         if (auxElem != NUL) {
-                            printf("auxElem !NULL");
                             prevElem = auxElem;
                             auxElem = auxElem->abaixo;
                         }
@@ -101,13 +94,11 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                 }
                 
                 if (auxCab != NUL) {
-                    printf("AuxCab !null");
                     auxCab = auxCab->direita;
                 }
             }
             
         } else { // Valor diferente de 0
-             printf("2 - Valor é != 0 %f", x);
              
             if (auxCab == NUL) {
                 newElem = (PontElem) malloc(sizeof(ElemMatriz));
@@ -122,31 +113,25 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                 if(*m == NUL) *m = newCab;    
             } else {
                 while (auxCab != NUL && j > auxCab->coluna) { 
-                    printf("3 - auxCab != NUL && j > auxCab->coluna");
                     prevCab = auxCab;
                     auxCab = auxCab->direita;
                 }
                 
                 if (auxCab != NUL) { // o while parou por j ser <=
-                    printf("4 - auxCab != NUL");
                     auxElem = auxCab->abaixo;
                     
                     if (j == auxCab->coluna) {
-                        printf("5 - j==auxCab ");
                         while (auxElem != NUL && i > auxElem->linha) {
-                            printf("6");
-                 
+           
                             prevElem = auxElem;
                             auxElem = auxElem->abaixo;
                         }
                         
                         if (auxElem != NUL) { // i <= linha
-                            printf("7 - auxelem != NUL");
                             if (i == auxElem->linha) { //elemento existe, substitui valor
                                 auxElem->valor = x;
                                 
                             } else { // i < linha
-                            printf("8 - i < linha");
                                 newElem = (PontElem) malloc(sizeof(ElemMatriz));
                                 newElem->valor = x;
                                 newElem->linha = i;
@@ -155,7 +140,6 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                             }
                             
                         } else if (i > prevElem->linha){// o elem e o ultimo do cab e auxElem==NULL
-                        printf("9-  o elem e o ultimo do cab e auxElem==NULL");
                             newElem = (PontElem) malloc(sizeof(ElemMatriz));
                             newElem->valor = x;
                             newElem->linha = i;
@@ -164,7 +148,6 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                         }
                             
                     } else if (j < auxCab->coluna) {
-                        printf("10 - aloca");
                         newElem = (PontElem) malloc(sizeof(ElemMatriz));
                         newElem->valor = x;
                         newElem->linha = i;
@@ -175,10 +158,10 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                         newCab->abaixo = newElem;
                         newCab->direita = auxCab;
                         prevCab->direita = newCab;
+            
                     } 
                     
-                } else if (j > prevCab->coluna){ // o Cab nao existe e e o ultimo
-                    printf("11 - j > prevCab");
+                } else { // o Cab nao existe e e o ultimo
                     newElem = (PontElem) malloc(sizeof(ElemMatriz));
                     newElem->valor = x;
                     newElem->linha = i;
@@ -188,6 +171,16 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                     newCab->coluna = j;
                     newCab->abaixo = newElem;
                     newCab->direita = NUL;
+                    
+                    if(*m == NUL) {
+                        *m = newCab;    
+                    } else {
+                        helpCab = *m;
+                        while (helpCab->direita != NUL){
+                            helpCab = helpCab->direita;
+                        }
+                        helpCab->direita = newCab;
+                    }
                     
                 }
             }
@@ -264,11 +257,13 @@ int NumeroNos(Matriz m){
     if (m != NUL) {
         
         PontCab auxCab = m;
-        PontElem auxElem = auxCab->abaixo;
+        PontElem auxElem; 
         
         while (auxCab != NUL) {
+            auxElem = auxCab->abaixo;
+            
             while (auxElem != NUL) {
-                numElems += 1;
+                numElems++;
                 auxElem = auxElem->abaixo;
             }
             
@@ -383,6 +378,11 @@ PontCab SomaCabs (PontCab cabA, PontCab cabB) {
                 newElem->linha = auxElemB->linha;
                 auxElemA = auxElemA->abaixo;
                 auxElemB = auxElemB->abaixo;
+                
+                if (newElem->valor == 0) {
+                    free(newElem);
+                    newElem = NUL;
+                } 
             
             } else if (auxElemA->linha < auxElemB->linha) {
                 newElem->valor = auxElemA->valor;
@@ -397,7 +397,12 @@ PontCab SomaCabs (PontCab cabA, PontCab cabB) {
         }
         
         if (newCab->abaixo == NUL) {
-            newCab->abaixo = newElem;
+            if (newElem != NUL) {
+                newCab->abaixo = newElem;
+            } else {
+                free(newCab);
+                newCab = NUL;
+            }
         
         } else {
             prevNewElem->abaixo = newElem;
