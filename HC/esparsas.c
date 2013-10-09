@@ -2,6 +2,7 @@
 
 #include "esparsas.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 /* Coloca NUL na memoria apontada por m */
 void IniciaMatriz(PontMatriz m){
@@ -42,38 +43,46 @@ void LiberaMatriz(PontMatriz m){
    caso o elmeneto m[i][j] nao exista e x!=0 insere o elemento na estrutura */
 void AtribuiMatriz(PontMatriz m, int i, int j, float x){
 
+    
     PontCab auxCab = *m;
     PontCab prevCab, newCab;
     PontElem auxElem, proxElem, prevElem, newElem;
     int countElemCol = 0; //auxilia no reajuste de ligacoes
 
-    if (i > 0 && j > 0) {   //Validar se e uma posicao valida
-
+    if (i > 0 && j > 0) {   //Validar se e uma posicao valida 
+        printf("1 - Posicao validada");
         if (x == 0) { // Novo valor e 0
-            
+            printf("2 - Valor é 0 %f \n", x);
             while (auxCab != NUL && j >= auxCab->coluna) {
-                
-                if (j == auxCab->coluna) {   // Coluna existe
+                 printf("3 - While \n");
+     
+                if (j == auxCab->coluna) { 
+                    printf("4 - j == auxCab \n");  // Coluna existe
                     auxElem = auxCab->abaixo;
-                    
+                     
                     while (auxElem != NUL && i >= auxElem->linha) {
+                        printf("5 - while \n");
+              
                         countElemCol += 1;
                         
                         if (i == auxElem->linha) { // Elemento ja existe
-                            
+                            printf("6 - i == auxElem \n");
                             if (auxElem->abaixo == NUL && countElemCol == 1) {
+                                printf("7 - free");
                                 free(auxElem);
                                 free(auxCab);
                                 auxElem = NUL;
                                 auxCab = NUL;
                                 
                             } else if(auxElem->abaixo == NUL) {
+                                printf("8 - free");
                                 prevElem->abaixo = NUL;
                                 free(auxElem);
                                 auxElem = NUL;
                                 auxCab = NUL;
                                 
                             } else {
+                                printf("9 - free");
                                 proxElem = auxElem->abaixo;
                                 prevElem->abaixo = proxElem; 
                                 free(auxElem);
@@ -84,6 +93,7 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                         }
                         
                         if (auxElem != NUL) {
+                            printf("auxElem !NULL");
                             prevElem = auxElem;
                             auxElem = auxElem->abaixo;
                         }
@@ -91,62 +101,15 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                 }
                 
                 if (auxCab != NUL) {
+                    printf("AuxCab !null");
                     auxCab = auxCab->direita;
                 }
             }
             
         } else { // Valor diferente de 0
-            
-            while (auxCab != NUL && j > auxCab->coluna) { 
-                prevCab = auxCab;
-                auxCab = auxCab->direita;
-            }
-            
-            if (auxCab != NUL) { // o while parou por j ser <=
-                auxElem = auxCab->abaixo;
-                
-                if (j == auxCab->coluna) {
-                    
-                    while (auxElem != NUL && i > auxElem->linha) {
-                        prevElem = auxElem;
-                        auxElem = auxElem->abaixo;
-                    }
-                    
-                    if (auxElem != NUL) { // i <= linha
-                        
-                        if (i == auxElem->linha) { //elemento existe, substitui valor
-                            auxElem->valor = x;
-                            
-                        } else { // i < linha
-                            newElem = (PontElem) malloc(sizeof(ElemMatriz));
-                            newElem->valor = x;
-                            newElem->linha = i;
-                            newElem->abaixo = auxElem;
-                            prevElem->abaixo = newElem;
-                        }
-                        
-                    } else if (i > prevElem->linha){// o elem e o ultimo do cab e auxElem==NULL
-                        newElem = (PontElem) malloc(sizeof(ElemMatriz));
-                        newElem->valor = x;
-                        newElem->linha = i;
-                        newElem->abaixo = NUL;
-                        prevElem->abaixo = newElem;
-                    }
-                        
-                } else if (j < auxCab->coluna) {
-                    newElem = (PontElem) malloc(sizeof(ElemMatriz));
-                    newElem->valor = x;
-                    newElem->linha = i;
-                    newElem->abaixo = NUL;
-                    
-                    newCab = (PontCab) malloc(sizeof(CabMatriz));
-                    newCab->coluna = j;
-                    newCab->abaixo = newElem;
-                    newCab->direita = auxCab;
-                    prevCab->direita = newCab;
-                } 
-                
-            } else if (j > prevCab->coluna){ // o Cab nao existe e e o ultimo
+             printf("2 - Valor é != 0 %f", x);
+             
+            if (auxCab == NUL) {
                 newElem = (PontElem) malloc(sizeof(ElemMatriz));
                 newElem->valor = x;
                 newElem->linha = i;
@@ -156,9 +119,78 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                 newCab->coluna = j;
                 newCab->abaixo = newElem;
                 newCab->direita = NUL;
+              
+            } else {
+                while (auxCab != NUL && j > auxCab->coluna) { 
+                    printf("3 - auxCab != NUL && j > auxCab->coluna");
+                    prevCab = auxCab;
+                    auxCab = auxCab->direita;
+                }
                 
+                if (auxCab != NUL) { // o while parou por j ser <=
+                    printf("4 - auxCab != NUL");
+                    auxElem = auxCab->abaixo;
+                    
+                    if (j == auxCab->coluna) {
+                        printf("5 - j==auxCab ");
+                        while (auxElem != NUL && i > auxElem->linha) {
+                            printf("6");
+                 
+                            prevElem = auxElem;
+                            auxElem = auxElem->abaixo;
+                        }
+                        
+                        if (auxElem != NUL) { // i <= linha
+                            printf("7 - auxelem != NUL");
+                            if (i == auxElem->linha) { //elemento existe, substitui valor
+                                auxElem->valor = x;
+                                
+                            } else { // i < linha
+                            printf("8 - i < linha");
+                                newElem = (PontElem) malloc(sizeof(ElemMatriz));
+                                newElem->valor = x;
+                                newElem->linha = i;
+                                newElem->abaixo = auxElem;
+                                prevElem->abaixo = newElem;
+                            }
+                            
+                        } else if (i > prevElem->linha){// o elem e o ultimo do cab e auxElem==NULL
+                        printf("9-  o elem e o ultimo do cab e auxElem==NULL");
+                            newElem = (PontElem) malloc(sizeof(ElemMatriz));
+                            newElem->valor = x;
+                            newElem->linha = i;
+                            newElem->abaixo = NUL;
+                            prevElem->abaixo = newElem;
+                        }
+                            
+                    } else if (j < auxCab->coluna) {
+                        printf("10 - aloca");
+                        newElem = (PontElem) malloc(sizeof(ElemMatriz));
+                        newElem->valor = x;
+                        newElem->linha = i;
+                        newElem->abaixo = NUL;
+                        
+                        newCab = (PontCab) malloc(sizeof(CabMatriz));
+                        newCab->coluna = j;
+                        newCab->abaixo = newElem;
+                        newCab->direita = auxCab;
+                        prevCab->direita = newCab;
+                    } 
+                    
+                } else if (j > prevCab->coluna){ // o Cab nao existe e e o ultimo
+                    printf("11 - j > prevCab");
+                    newElem = (PontElem) malloc(sizeof(ElemMatriz));
+                    newElem->valor = x;
+                    newElem->linha = i;
+                    newElem->abaixo = NUL;
+                    
+                    newCab = (PontCab) malloc(sizeof(CabMatriz));
+                    newCab->coluna = j;
+                    newCab->abaixo = newElem;
+                    newCab->direita = NUL;
+                    
+                }
             }
-            
         }
     }
 }
