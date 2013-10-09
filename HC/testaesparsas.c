@@ -9,6 +9,7 @@ void LeMatriz(PontMatriz a) {
   IniciaMatriz(a);
   do {
    scanf("%d %d %f",&i,&j,&x);
+   printf("i: %d , j:%d, x:%f\n",i,j,x);
    if (i!=0)
      AtribuiMatriz(a,i,j,x);
   } while (i!=0);

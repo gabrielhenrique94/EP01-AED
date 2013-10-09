@@ -119,7 +119,7 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                 newCab->coluna = j;
                 newCab->abaixo = newElem;
                 newCab->direita = NUL;
-              
+                if(*m == NUL) *m = newCab;    
             } else {
                 while (auxCab != NUL && j > auxCab->coluna) { 
                     printf("3 - auxCab != NUL && j > auxCab->coluna");
