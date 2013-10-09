@@ -1,7 +1,7 @@
 /* Arquivo esparsas.c */
 
 #include "esparsas.h"
-#include <malloc.h>
+#include <stdlib.h>
 
 /* Coloca NUL na memoria apontada por m */
 void IniciaMatriz(PontMatriz m){
@@ -18,10 +18,10 @@ void LiberaMatriz(PontMatriz m){
         PontCab freeCab;
         PontElem auxElem, freeElem;
         
-        while (auxCab != NULL) {
+        while (auxCab != NUL) {
             auxElem = auxCab->abaixo;
             
-            while (auxElem != NULL) {
+            while (auxElem != NUL) {
                 freeElem = auxElem;
                 auxElem = freeElem->abaixo;
                 free(freeElem);
@@ -51,68 +51,68 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
 
         if (x == 0) { // Novo valor e 0
             
-            while (auxCab != NULL && j >= auxCab->coluna) {
+            while (auxCab != NUL && j >= auxCab->coluna) {
                 
                 if (j == auxCab->coluna) {   // Coluna existe
                     auxElem = auxCab->abaixo;
                     
-                    while (auxElem != NULL && i >= auxElem->linha) {
+                    while (auxElem != NUL && i >= auxElem->linha) {
                         countElemCol += 1;
                         
                         if (i == auxElem->linha) { // Elemento ja existe
                             
-                            if (auxElem->abaixo == NULL && countElemCol == 1) {
+                            if (auxElem->abaixo == NUL && countElemCol == 1) {
                                 free(auxElem);
                                 free(auxCab);
-                                auxElem = NULL;
-                                auxCab = NULL;
+                                auxElem = NUL;
+                                auxCab = NUL;
                                 
-                            } else if(auxElem->abaixo == NULL) {
-                                prevElem->abaixo = NULL;
+                            } else if(auxElem->abaixo == NUL) {
+                                prevElem->abaixo = NUL;
                                 free(auxElem);
-                                auxElem = NULL;
-                                auxCab = NULL;
+                                auxElem = NUL;
+                                auxCab = NUL;
                                 
                             } else {
                                 proxElem = auxElem->abaixo;
                                 prevElem->abaixo = proxElem; 
                                 free(auxElem);
-                                auxElem = NULL;
-                                auxCab = NULL;
+                                auxElem = NUL;
+                                auxCab = NUL;
                             }
                         
                         }
                         
-                        if (auxElem != NULL) {
+                        if (auxElem != NUL) {
                             prevElem = auxElem;
                             auxElem = auxElem->abaixo;
                         }
                     }
                 }
                 
-                if (auxCab != NULL) {
+                if (auxCab != NUL) {
                     auxCab = auxCab->direita;
                 }
             }
             
         } else { // Valor diferente de 0
             
-            while (auxCab != NULL && j > auxCab->coluna) { 
+            while (auxCab != NUL && j > auxCab->coluna) { 
                 prevCab = auxCab;
                 auxCab = auxCab->direita;
             }
             
-            if (auxCab != NULL) { // o while parou por j ser <=
+            if (auxCab != NUL) { // o while parou por j ser <=
                 auxElem = auxCab->abaixo;
                 
                 if (j == auxCab->coluna) {
                     
-                    while (auxElem != NULL && i > auxElem->linha) {
+                    while (auxElem != NUL && i > auxElem->linha) {
                         prevElem = auxElem;
                         auxElem = auxElem->abaixo;
                     }
                     
-                    if (auxElem != NULL) { // i <= linha
+                    if (auxElem != NUL) { // i <= linha
                         
                         if (i == auxElem->linha) { //elemento existe, substitui valor
                             auxElem->valor = x;
@@ -129,7 +129,7 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                         newElem = (PontElem) malloc(sizeof(ElemMatriz));
                         newElem->valor = x;
                         newElem->linha = i;
-                        newElem->abaixo = NULL;
+                        newElem->abaixo = NUL;
                         prevElem->abaixo = newElem;
                     }
                         
@@ -137,7 +137,7 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                     newElem = (PontElem) malloc(sizeof(ElemMatriz));
                     newElem->valor = x;
                     newElem->linha = i;
-                    newElem->abaixo = NULL;
+                    newElem->abaixo = NUL;
                     
                     newCab = (PontCab) malloc(sizeof(CabMatriz));
                     newCab->coluna = j;
@@ -150,12 +150,12 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                 newElem = (PontElem) malloc(sizeof(ElemMatriz));
                 newElem->valor = x;
                 newElem->linha = i;
-                newElem->abaixo = NULL;
+                newElem->abaixo = NUL;
                 
                 newCab = (PontCab) malloc(sizeof(CabMatriz));
                 newCab->coluna = j;
                 newCab->abaixo = newElem;
-                newCab->direita = NULL;
+                newCab->direita = NUL;
                 
             }
             
@@ -170,19 +170,19 @@ float ValorMatriz(Matriz m, int i, int j){
        
        PontCab auxCab = m;
        
-       while (auxCab != NULL && auxCab->coluna != j) {
+       while (auxCab != NUL && auxCab->coluna != j) {
            auxCab = auxCab->direita;
        }
        
-       if (auxCab != NULL && auxCab->coluna == j) {
+       if (auxCab != NUL && auxCab->coluna == j) {
 
            PontElem auxElem = auxCab->abaixo;
 
-           while (auxElem != NULL && auxElem->linha != i) {
+           while (auxElem != NUL && auxElem->linha != i) {
                auxElem = auxElem->abaixo;
            }
            
-           if (auxElem != NULL && auxElem->linha == i) {
+           if (auxElem != NUL && auxElem->linha == i) {
                return auxElem->valor;
            }
        }
@@ -221,13 +221,6 @@ void OrdemMatriz(Matriz  m, int* l, int* c){
         
         auxCab = auxCab->direita;
     }
-    
-        
-    
-  
-    
-    
-
 }
 
 /* Devolve o numero total de nos (elementos do tipo EleMatriz) alocados para 
@@ -241,8 +234,8 @@ int NumeroNos(Matriz m){
         PontCab auxCab = m;
         PontElem auxElem = auxCab->abaixo;
         
-        while (auxCab != NULL) {
-            while (auxElem != NULL) {
+        while (auxCab != NUL) {
+            while (auxElem != NUL) {
                 numElems += 1;
                 auxElem = auxElem->abaixo;
             }
@@ -266,7 +259,7 @@ int NumeroCabecalhos(Matriz m){
         
         PontCab auxCab = m;
         
-        while (auxCab != NULL) {
+        while (auxCab != NUL) {
             numCabs += 1;
             auxCab = auxCab->direita;
         }    
@@ -290,6 +283,100 @@ int TamanhoCabecalho(){
 
 }
 
+/* Faz um novo PontCab que possui as mesmas caracteristicas do passado
+   como argumento, como se fosse uma copia. */
+PontCab CopiaCab (PontCab cab) {
+    
+    PontElem newElem, prevNewElem, auxElem;
+    PontCab newCab = (PontCab) malloc(sizeof(CabMatriz));
+    newCab->coluna = cab->coluna;
+    newCab->abaixo = NUL;
+    newCab->direita = NUL;
+   
+    auxElem = cab->abaixo;
+    
+    while (auxElem != NUL) {
+        newElem = (PontElem) malloc(sizeof(ElemMatriz));
+        newElem->valor = auxElem->valor;
+        newElem->linha = auxElem->linha;
+        newElem->abaixo = NUL;
+        
+        if (newCab->abaixo == NUL) {
+            newCab->abaixo = newElem;
+        } else {
+            prevNewElem->abaixo = newElem;
+        }       
+        
+        prevNewElem = newElem;
+        auxElem = auxElem->abaixo; 
+        
+    }
+    
+    return newCab;
+    
+}
+
+/*Faz um novo PontCab, a partir da soma de dois outros PontCab */
+PontCab SomaCabs (PontCab cabA, PontCab cabB) {
+
+    PontElem newElem, prevNewElem, auxElemA, auxElemB;
+    PontCab newCab = (PontCab) malloc(sizeof(CabMatriz));
+    newCab->coluna = cabA->coluna;
+    newCab->abaixo = NUL;
+    newCab->direita = NUL;
+    
+    auxElemA = cabA->abaixo;
+    auxElemB = cabB->abaixo;
+    
+    while (auxElemA != NUL || auxElemB != NUL) {
+        newElem = (PontElem) malloc(sizeof(ElemMatriz));
+        newElem->valor = NUL;
+        newElem->linha = NUL;
+        newElem->abaixo = NUL;
+        
+        if (auxElemA == NUL) {
+            newElem->valor = auxElemB->valor;
+            newElem->linha = auxElemB->linha;
+            auxElemB = auxElemB->abaixo;
+       
+        } else if (auxElemB == NUL) {
+            newElem->valor = auxElemA->valor;
+            newElem->linha = auxElemA->linha;
+            auxElemA = auxElemA->abaixo;
+        
+        } else{
+            
+            if (auxElemA->linha == auxElemB->linha) {
+                newElem->valor = auxElemB->valor + auxElemA->valor;
+                newElem->linha = auxElemB->linha;
+                auxElemA = auxElemA->abaixo;
+                auxElemB = auxElemB->abaixo;
+            
+            } else if (auxElemA->linha < auxElemB->linha) {
+                newElem->valor = auxElemA->valor;
+                newElem->linha = auxElemA->linha;
+                auxElemA = auxElemA->abaixo;
+            
+            } else {
+                newElem->valor = auxElemB->valor;
+                newElem->linha = auxElemB->linha;
+                auxElemB = auxElemB->abaixo;
+            }
+        }
+        
+        if (newCab->abaixo == NUL) {
+            newCab->abaixo = newElem;
+        
+        } else {
+            prevNewElem->abaixo = newElem;
+        }
+        
+        prevNewElem = newElem;
+    }
+    
+    return newCab;
+}
+
 /* Devolve o endereco do primeiro PontCab de uma nova matriz correspondendo a 
    soma das matrizes apontadas por a e b: a+b.
    Tente fazer uma implementacao eficiente (nao faz sentido tentar somar dois
@@ -298,17 +385,51 @@ Matriz SomaMatriz(Matriz a, Matriz b) {
  
     PontCab auxCabA = a;
     PontCab auxCabB = b;
-    PontCab specialCab;
-    PontElem auxElemA, auxElemB;
+    PontCab prevCab, newCab;
     Matriz newMatriz; 
     
     IniciaMatriz(&newMatriz);
         
-    while (auxCabA != NULL || auxCabB != NULL) {
+    while (auxCabA != NUL || auxCabB != NUL) {
         
+        if (auxCabA == NUL) {
+            newCab = CopiaCab(auxCabB);
+            auxCabB = auxCabB->direita;
+        
+        } else if (auxCabB == NUL) {
+            newCab = CopiaCab(auxCabA);
+            auxCabA = auxCabA->direita;
+            
+        } else {
+            
+            if (auxCabA->coluna == auxCabB->coluna) {
+                newCab = SomaCabs(auxCabA, auxCabB);
+                auxCabA = auxCabA->direita;
+                auxCabB = auxCabB->direita;
+            } else if (auxCabA->coluna < auxCabB->coluna) {
+                newCab = CopiaCab(auxCabA);
+                auxCabA = auxCabA->direita;
+            } else { 
+                newCab = CopiaCab(auxCabB);
+                auxCabB = auxCabB->direita;
+            }
+        }
+        
+        if (newMatriz == NUL){
+            newMatriz = newCab;
+        } else {
+            prevCab->direita = newCab;
+        }
+        
+        prevCab = newCab;
     }
     
     return newMatriz;
     
 }
+
+
+
+
+
  
