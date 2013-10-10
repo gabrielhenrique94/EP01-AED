@@ -65,6 +65,9 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                         if (i == auxElem->linha) { // Elemento ja existe
                             
                             if (auxElem->abaixo == NUL && countElemCol == 1) {
+                                if (auxCab == *m) {
+                                    LiberaMatriz(m);
+                                } 
                                 free(auxElem);
                                 free(auxCab);
                                 auxElem = NUL;
@@ -133,17 +136,16 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                                 auxElem->valor = x;
                                 
                             } else { // i < linha
-                                printf("entrou aqui \n");
                                 newElem = (PontElem) malloc(sizeof(ElemMatriz));
                                 newElem->valor = x;
                                 newElem->linha = i;
                                 newElem->abaixo = auxElem;
-                                printf("prevElem: %p \n",prevElem);
-                                if(prevElem != NUL)
+                                
+                                if(prevElem != NUL) {
                                     prevElem->abaixo = newElem;
-                                else
+                                } else {
                                     auxCab -> abaixo = newElem;
-                                printf("passou daqui \n");
+                                }
 
                             }
                             
@@ -165,7 +167,12 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                         newCab->coluna = j;
                         newCab->abaixo = newElem;
                         newCab->direita = auxCab;
-                        prevCab->direita = newCab;
+                        
+                        if (prevCab != NUL) {
+                            prevCab->direita = newCab;
+                        } else {
+                            *m = newCab;
+                        }
             
                     } 
                     
