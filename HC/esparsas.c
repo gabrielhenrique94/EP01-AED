@@ -1,7 +1,7 @@
 /* Arquivo esparsas.c */
 
 #include "esparsas.h"
-#include <stdlib.h>
+#include <malloc.h>
 #include <stdio.h>
 
 /* Coloca NUL na memoria apontada por m */
@@ -112,6 +112,7 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                 newCab->direita = NUL;
                 if(*m == NUL) *m = newCab;    
             } else {
+                prevElem = NUL;
                 while (auxCab != NUL && j > auxCab->coluna) { 
                     prevCab = auxCab;
                     auxCab = auxCab->direita;
@@ -132,11 +133,18 @@ void AtribuiMatriz(PontMatriz m, int i, int j, float x){
                                 auxElem->valor = x;
                                 
                             } else { // i < linha
+                                printf("entrou aqui \n");
                                 newElem = (PontElem) malloc(sizeof(ElemMatriz));
                                 newElem->valor = x;
                                 newElem->linha = i;
                                 newElem->abaixo = auxElem;
-                                prevElem->abaixo = newElem;
+                                printf("prevElem: %p \n",prevElem);
+                                if(prevElem != NUL)
+                                    prevElem->abaixo = newElem;
+                                else
+                                    auxCab -> abaixo = newElem;
+                                printf("passou daqui \n");
+
                             }
                             
                         } else if (i > prevElem->linha){// o elem e o ultimo do cab e auxElem==NULL

@@ -1,7 +1,7 @@
 /* Arquivo esparsas.c */
 
 #include "esparsas.h"
-#include <stdlib.h>
+#include <malloc.h>
 
 
 /* Coloca NUL na memoria apontada por m */
